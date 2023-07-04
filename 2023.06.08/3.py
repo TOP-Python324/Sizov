@@ -1,17 +1,18 @@
 def numbers_strip(numbers: list[float], n: int = 1, *, copy: bool = False) -> list[float]:
     """Удаляет n минимальных и n максимальных чисел из списка"""
-    
-    if copy: # если вернуть копию
+    # если вернуть копию
+    if copy:
+        # ПЕРЕИМЕНОВАТЬ: в создании новой переменной нет необходимости — используйте имя numbers
         numbers_new = numbers.copy()
     else:
         numbers_new = numbers
-        
-    for i in range(n):
+    # ИСПОЛЬЗОВАТЬ: для невостребованной переменной цикла используют имя _
+    for _ in range(n):
         numbers_new.remove(min(numbers_new))
-        numbers_new.remove(max(numbers_new))   
-        
+        numbers_new.remove(max(numbers_new))
     return numbers_new
-    
+
+
 # >>> sample = [1, 2, 3, 4]
 # >>> sample_stripped = numbers_strip(sample)
 # >>> sample_stripped
@@ -24,3 +25,4 @@ def numbers_strip(numbers: list[float], n: int = 1, *, copy: bool = False) -> li
 # [30]
 # >>> sample is sample_stripped
 # False
+
