@@ -4,15 +4,20 @@ def central_tendency(number1: float, number2: float, *numbers: float) -> dict[st
     out_dict = {'median': 0, 'arithmetic': 0, 'geometric': 0, 'harmonic': 0}
     # ПЕРЕИМЕНОВАТЬ: в создании новой переменной нет необходимости — используйте имя numbers
     in_tuple = (number1, number2) + numbers
-    
-    sum_geometric = 1 
-    sum_harmonic = 0 
-    
-    for n in in_tuple:         
+
+    # УДАЛИТЬ: поскольку у вас уже есть словарь, то в создании этих переменных нет необходимости
+    sum_geometric = 1
+    sum_harmonic = 0
+
+    # КОММЕНТАРИЙ: хорошо, что пошли в один цикл...
+    for n in in_tuple:
+        # ДОБАВИТЬ: ... но плохо, что не стали здесь же вычислять сумму элементов
         sum_geometric *= n
         sum_harmonic += 1/n
-        
+
+    # ИСПРАВИТЬ: встроенная функция sum() хоть и является очень производительной, но всё же она итеративна — то есть здесь вы ещё раз перебираете все числа — при большом количестве чисел это станет заметно
     out_dict['arithmetic'] = sum(in_tuple) / len(in_tuple)
+    # ИСПРАВИТЬ: повторное вычисление количества элементов неоптимально — уже второе написание len(in_tuple) должно было навести вас на мысль, что количество элементов необходимо вычислить заранее
     out_dict['geometric'] = pow(sum_geometric, 1/len(in_tuple))
     out_dict['harmonic'] = len(in_tuple) / sum_harmonic
     
@@ -20,14 +25,28 @@ def central_tendency(number1: float, number2: float, *numbers: float) -> dict[st
     if len(in_tuple) % 2 != 0:
         out_dict['median'] = float(in_tuple[int((len(in_tuple)-1)/2)])
     else:
+        # ИСПРАВИТЬ: повторное вычисление индекса середины последовательности неоптимально
+        # ИСПРАВИТЬ: использование оператора целочисленного деления // позволит избежать явного преобразования в объект int
         out_dict['median'] = (in_tuple[int(len(in_tuple)/2)] + in_tuple[int(len(in_tuple)/2-1)]) / 2
-        
+
     return out_dict
 
 
 # >>> central_tendency(1, 2, 3, 4)
 # {'median': 2.5, 'arithmetic': 2.5, 'geometric': 2.2133638394006434, 'harmonic': 1.9200000000000004}
+
 # >>> sample = [1, 2, 3, 4, 5]
 # >>> central_tendency(*sample)
 # {'median': 3.0, 'arithmetic': 3.0, 'geometric': 2.605171084697352, 'harmonic': 2.18978102189781}
-        
+
+# ДОБАВИТЬ везде и всегда: тесты не только по примерам, но для всех возможных ситуаций, например:
+# >>> central_tendency(0.1, 0.3, -0.2, 0.14, -0.08)
+# {'median': 0.1, 'arithmetic': 0.052000000000000005, 'geometric': 0.14637734128351512, 'harmonic': 1.68}
+
+# >>> central_tendency(-1, 1)
+# КОММЕНТАРИЙ: это ожидаемое поведение, так как ряд переданных чисел является расходящимся, следовательно среднее гармоническое стремится к бесконечности — такие ситуации в коде надо обрабатывать отдельно; перед вами такой задачи не ставилось, но поведение своей функции необходимо понимать, для этого и существует тестирование
+# ...
+# ZeroDivisionError: float division by zero
+
+
+# ИТОГ: хорошо, но можно лучше — 4/6

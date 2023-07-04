@@ -2,8 +2,9 @@ def numbers_strip(numbers: list[float], n: int = 1, *, copy: bool = False) -> li
     """Удаляет n минимальных и n максимальных чисел из списка"""
     # если вернуть копию
     if copy:
-        # ПЕРЕИМЕНОВАТЬ: в создании новой переменной нет необходимости — используйте имя numbers
+        # ПЕРЕИМЕНОВАТЬ: в создании новой переменной нет необходимости — используйте имя numbers...
         numbers_new = numbers.copy()
+    # УДАЛИТЬ: ... и тогда блок else не понадобится
     else:
         numbers_new = numbers
     # ИСПОЛЬЗОВАТЬ: для невостребованной переменной цикла используют имя _
@@ -19,6 +20,7 @@ def numbers_strip(numbers: list[float], n: int = 1, *, copy: bool = False) -> li
 # [2, 3]
 # >>> sample is sample_stripped
 # True
+
 # >>> sample = [10, 20, 30, 40, 50]
 # >>> sample_stripped = numbers_strip(sample, 2, copy=True)
 # >>> sample_stripped
@@ -26,3 +28,10 @@ def numbers_strip(numbers: list[float], n: int = 1, *, copy: bool = False) -> li
 # >>> sample is sample_stripped
 # False
 
+# ДОБАВИТЬ везде и всегда: тесты не только по примерам, но для всех возможных ситуаций, например:
+# >>> sample_stripped = numbers_strip([])
+# ...
+# ValueError: min() arg is an empty sequence
+
+
+# ИТОГ: очень хорошо — 3/4

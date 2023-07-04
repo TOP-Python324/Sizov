@@ -27,7 +27,8 @@ def strong_password(password: str) -> bool:
         # проверка на спецсимволы
         elif (32 <= ord(s) <= 47) or (91 <= ord(s) <= 96) or (123 <= ord(s) <= 126):
             flag_symbol = True
-    
+
+    # ИСПРАВИТЬ: конструкция if избыточна — можно сразу вернуть результат вычисления логического выражения
     if flag_ALPHA and flag_alpha and flag_digit and flag_symbol:
         return True
     else:
@@ -42,3 +43,5 @@ def strong_password(password: str) -> bool:
 
 # КОММЕНТАРИЙ: PEP 8 — сборник рекомендаций по стилистическому оформлению Python кода — их стоит использовать для большего удобства чтения своего и чужого кода: https://peps.python.org/pep-0008/
 
+
+# ИТОГ: очень хорошо — 4/5

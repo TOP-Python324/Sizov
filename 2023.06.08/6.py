@@ -23,3 +23,11 @@ def orth_triangle(*, cathetus1: int = 0, cathetus2: int = 0, hypotenuse: int = 0
 # >>> print(orth_triangle(cathetus2=9, hypotenuse=3))
 # None
 
+# ДОБАВИТЬ везде и всегда: тесты не только по примерам, но для всех возможных ситуаций, например:
+# >>> print(orth_triangle(cathetus1=10))
+# None
+# >>> print(orth_triangle(cathetus1=3, cathetus2=4, hypotenuse=5))
+# None
+
+
+# ИТОГ: отлично — 4/4
