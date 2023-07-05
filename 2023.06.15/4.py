@@ -1,14 +1,15 @@
 def repeat(function):
     """Выполняет декорируемую функцию десять раз."""
-    
     def wrapper(*args, **kwargs):
-        for i in range(10): 
+        # ИСПОЛЬЗОВАТЬ: для невостребованной переменной цикла используют имя _
+        # КОММЕНТАРИЙ: имена i, j, k традиционно используются только для индексов
+        for i in range(10):
             result = function(*args, **kwargs)
         return result
-        
+
     return wrapper   
 
-        
+
 # >>> def testing_function():
 # ...     print('python')
 # ...
@@ -25,3 +26,4 @@ def repeat(function):
 # python
 # python
 # python
+

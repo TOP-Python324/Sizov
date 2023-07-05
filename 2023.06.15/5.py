@@ -1,47 +1,43 @@
 def logger(function):
     """Ведёт журнал вызовов декорируемой функции в стандартном потоке вывода ."""
-    
     def wrapper(*args, **kwargs):
         result = None
-        
         # формируем журнал функции
-        out = function.__name__ + '(' # добавляем название функции и (
-        
-        for arg in args: # добавляем позиционные аргументы переданные в функцию
-                out += str(arg) + ', ' 
-        
-        if len(args) < function.__code__.co_argcount: # если передали значений для позиционных аргументов меньше чем есть у функции то дописываем значениями по умолчанию
-            count = function.__code__.co_argcount - len(args) # вычисляем сколько значений нужно дописать
-            list_arg = list(function.__defaults__) # переводим значения по умолчанию в список
+        # ИСПОЛЬЗОВАТЬ: согласно PEP 8, комментарий следует располагать над комментируемой строчкой кода
+        # добавляем название функции и (
+        out = function.__name__ + '('
+        # добавляем позиционные аргументы переданные в функцию
+        for arg in args:
+            out += str(arg) + ', '
+        # если передали значений для позиционных аргументов меньше чем есть у функции то дописываем значениями по умолчанию
+        if len(args) < function.__code__.co_argcount:
+            # вычисляем сколько значений нужно дописать
+            count = function.__code__.co_argcount - len(args)
+            # переводим значения по умолчанию в список
+            list_arg = list(function.__defaults__)
             while count > 0:
-                out += str(list_arg[len(args) - count -1]) + ', '
+                out += str(list_arg[len(args)-count-1]) + ', '
                 count -= 1
-
-        
-        for key, val in kwargs.items(): # добавляем ключевые аргументы
-                out += key + '=' + str(val) 
-                
-        if function.__kwdefaults__ != None: # добавляем ключевые аргументы со значениями по умолчанию если они не переданы     
+        # добавляем ключевые аргументы
+        for key, val in kwargs.items():
+            out += key + '=' + str(val)
+        # добавляем ключевые аргументы со значениями по умолчанию если они не переданы
+        if function.__kwdefaults__ != None:
             for key, val in function.__kwdefaults__.items():
                 if not (key in kwargs.keys()):
                     out += key + '=' + str(val) 
-        out +=') -> '
-            
-            
+        out += ') -> '
+
         try:
-            result = function(*args, **kwargs) 
-            print(f'{out}{result}')    
-
-
+            result = function(*args, **kwargs)
+            print(f'{out}{result}')
         except Exception as exception:
             print(f'{out}\n\t{exception.__class__.__name__}: {exception}')
+        return result
 
-            
-        return result            
-        
-    
     return wrapper
-    
+
+
 # def div_round(num1, num2, *, digits=0):
 # ...     return round(num1 / num2, digits)
 # ...
@@ -68,3 +64,4 @@ def logger(function):
 # >>> div_round(7)
 # div_round(7, 1, digits=0) -> 7.0
 # 7.0
+

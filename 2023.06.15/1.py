@@ -19,27 +19,28 @@ nominals = {
 
 def pick_resistors(nominal: int) -> dict | None:
     """Подбирает ближайшие к переданному номиналы сопротивления из всех рядов сопротивлений"""
-    
-    if nominal < 100 or nominal > 999:
+    if nominal < 100 or 999 < nominal:
         return None
-        
+
     result = {}
+    # ПЕРЕИМЕНОВАТЬ: переменным требуется давать имена по смыслу, так чтобы код можно было удобнее и быстрее читать — имена i, volume вводят в заблуждение относительно того, какие значения ассоциированы с данными переменными — вместо них стоило назвать переменные label, row
+    # КОММЕНТАРИЙ: имена i, j, k традиционно используются только для индексов
     for i, volume in nominals.items(): 
         result.setdefault(i)
-
         n = list(map(lambda x: abs(x-nominal),volume))
-        
         delta = min(n)
-        
         out = list(filter(lambda it: abs(it - nominal) == delta, volume))
-   
-        result[i] =  tuple(out)
-        
-    return result    
-    
+        result[i] = tuple(out)
+
+    return result
+
+
 # pick_resistors(112)
 # {'E6': (100,), 'E12': (120,), 'E24': (110,), 'E48': (110,), 'E96': (113,)}
+
 # >>> pick_resistors(549)
 # {'E6': (470,), 'E12': (560,), 'E24': (560,), 'E48': (536, 562), 'E96': (549,)}
+
 # >>> print(pick_resistors(54))
-# None   
+# None
+
