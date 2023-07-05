@@ -1,18 +1,19 @@
 def math_function_resolver(
         math_function: 'function',
+        # ИСПРАВИТЬ: для произвольных кортежа и словаря аннотируются типы элементов, tuple или dict не указываются
         *numbers: tuple[int | float],
         strings: bool = False
 ) -> list[float | str]:
     """Вычисляет округлённые значения для различных математических функций.
     Математическая функция должна принимать один обязательный позиционно-ключевой аргумент — число x, для которого необходимо вычислить значение математической функции.
     """
-    result = []
-    for number in numbers:
-        result += [round(math_function(number), 2)]
-    
+    # ИСПОЛЬЗОВАТЬ: здесь уместно использование генераторного выражения
+    # result = []
+    # for number in numbers:
+    #     result += [round(math_function(number), 2)]
+    result = [round(math_function(num), 2) for num in numbers]
     if strings:
         result = list(map(str, result))
-
     return result
 
 
@@ -25,3 +26,9 @@ def math_function_resolver(
 # >>> math_function_resolver(lambda x: 2.72**x, *range(1, 10), strings=True)
 # ['2.72', '7.4', '20.12', '54.74', '148.88', '404.96', '1101.49', '2996.07', '8149.3']
 
+# ДОБАВИТЬ везде и всегда: тесты не только по примерам, но для как можно большего количества возможных ситуаций и входных данных, например:
+# >>> math_function_resolver(lambda x: x + 2, *[])
+# []
+
+
+# ИТОГ: очень хорошо — 3/4
