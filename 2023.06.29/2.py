@@ -1,15 +1,14 @@
 from collections.abc import Iterable
 
-def tree_leaves(leaves : list) -> int:
+
+def tree_leaves(leaves: list) -> int:
     """Считает количество листьев на дереве."""
     result = 0
-    
     for elem in leaves:
         if elem == 'leaf':
             result += 1
         else:
             result += tree_leaves(elem)
-    
     return result
     
     
@@ -23,4 +22,5 @@ def tree_leaves(leaves : list) -> int:
 # >>>
 # >>> tree_leaves([])
 # 0
-# >>>  
+# >>>
+
