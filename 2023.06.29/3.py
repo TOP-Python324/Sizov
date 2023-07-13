@@ -4,6 +4,7 @@ first_iteration = True
 
 def tree_generator() -> list:
     """Генерирует дерево с произвольным количеством веток и листьев. Роль листа играет строка 'leaf'."""
+    # КОММЕНТАРИЙ: интересное использование глобальной переменной!
     global first_iteration
 
     result = []
@@ -13,8 +14,8 @@ def tree_generator() -> list:
             result.append('leaf')
         else:
             result.append(tree_generator())
-    first_iteration = True    
-    return result    
+    first_iteration = True
+    return result
 
 
 # >>> tree_generator()
@@ -25,3 +26,5 @@ def tree_generator() -> list:
 # [['leaf'], 'leaf', 'leaf', ['leaf', [], ['leaf', 'leaf', [], 'leaf'], [[], [], 'leaf']]]
 # >>>
 
+
+# ИТОГ: отлично — 5/5

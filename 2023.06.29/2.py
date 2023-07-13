@@ -24,3 +24,5 @@ def tree_leaves(leaves: list) -> int:
 # 0
 # >>>
 
+
+# ИТОГ: отлично — 3/3
