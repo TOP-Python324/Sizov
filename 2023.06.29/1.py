@@ -4,10 +4,11 @@ from collections.abc import Iterable
 def product(numbers: Iterable[float]) -> float:
     """Возвращает произведение чисел."""
     # ИСПРАВИТЬ: есть небольшая проблемка — см. тест ниже
-    result = numbers[0]
-    if len(numbers) > 1:
+    result = 1 if len(numbers) == 0 else numbers[0]
+    if len(numbers) > 1: #1
         # КОММЕНТАРИЙ: да, именно так
         result *= product(numbers[1:])
+   
     return float(result)
 
 
