@@ -1,7 +1,7 @@
 from pathlib import Path
 from sys import path
 # ИСПРАВИТЬ: при импорте из стандартной библиотеки и внешних пакетов почти всегда предпочтительнее использовать конструкцию from ... import ...
-import csv
+from csv import reader, writer
 
 
 class CountableNouns:
@@ -10,19 +10,29 @@ class CountableNouns:
     """
     # ИСПРАВИТЬ: при передачи в функцию open() относительного пути интерпретатор будет искать файл относительно текущего рабочего каталога (cwd), а не относительно каталога со скриптом (см. тест ниже)
     db_path: Path = Path(r'words.csv')
+    script_dir = Path(path[0])
+    file_path = script_dir / db_path
     words: dict[str, tuple[str, str]] = {}
     # считывание данных из CSV файла
-    with open(db_path, encoding='utf-8') as r_file:
+    with open(file_path, encoding='utf-8') as r_file:
         # УДАЛИТЬ: избыточная переменная file_reader
-        file_reader = csv.reader(r_file, delimiter=',')
-        for row in file_reader:
+#        file_reader = csv.reader(r_file, delimiter=',')
+        for row in reader(r_file, delimiter=','):
             words[row[0]] = (row[1], row[2])
 
     @classmethod
     def pick(cls, number: int, word: str) -> str:
         """Принимает в качестве аргументов число и существительное для согласования в единственном числе, возвращает согласованное с переданным числом существительное."""
         # ИСПРАВИТЬ: смотреть одну последнюю цифру недостаточно, потому что есть числа исключения из правил согласования: 11, 12, 13, 14 и прочие, заканчивающиеся на эти цифры (см. тест ниже)
-        number = number if number < 10 else number % 10
+#        number = number if number < 10 else number % 10
+        while number > 19:
+            if number < 100:
+                number %= 10
+            else:
+                digit_number = len(str(number))
+                while digit_number > 2:
+                    digit_number -= 1
+                    number -= number//10**digit_number * 10**digit_number                    
         # ИСПРАВИТЬ: в данном случае имеет смысл использовать перехват исключения KeyError
         if number == 1:
             return word
@@ -37,28 +47,28 @@ class CountableNouns:
         
     @classmethod
     def save_words(cls, word1: str = None) -> None:
-        """Запрашивает в stdin у пользователя два или три слова согласующихся с числительными, добавляет полученные значения в поле класса words и дописывает их в файл с базой существительных"""
+        """Запрашивает в stdin у пользователя два или три слова согласующихся с числительными, добавляет полученные значения в поле класса words и дописывает их в файл с базой существительных."""
         if word1 is None:
             word1 = input('введите слово, согласующееся с числительным "один": ')
             # ИСПРАВИТЬ: эти действия выполняются одинаково вне зависимости от результата проверки — вынести за пределы условной конструкции
-            word2 = input('введите слово, согласующееся с числительным "два": ')
-            word5 = input('введите слово, согласующееся с числительным "пять": ')
+#            word2 = input('введите слово, согласующееся с числительным "два": ')
+#            word5 = input('введите слово, согласующееся с числительным "пять": ')
         else:
             print(f'существительное "{word1}" отсутствует в базе')
-            word2 = input('введите слово, согласующееся с числительным "два": ')
-            word5 = input('введите слово, согласующееся с числительным "пять": ')
             
+        word2 = input('введите слово, согласующееся с числительным "два": ')
+        word5 = input('введите слово, согласующееся с числительным "пять": ')  
+        
         cls.words[word1] = (word2, word5)  
         
         # запись данных в CSV файл
         # ИСПРАВИТЬ: в данном случае имеет смысл использовать дозапись в файл, потому что данный метод вызывается только для тех слов, которые отсутствуют в файле
-        with open(cls.db_path, 'w', newline='', encoding='utf-8') as csvfile:
-            file_writer = csv.writer(csvfile, delimiter=',')
+        with open(cls.file_path, 'a', newline='', encoding='utf-8') as csvfile:
+            file_writer = writer(csvfile, delimiter=',')
             # КОММЕНТАРИЙ: при дозаписи не придётся итерироваться по всему словарю — при большом количестве элементов это станет весьма затратной процедурой
-            for word in cls.words:
-                file_writer.writerow([word, cls.words[word][0], cls.words[word][1]])
+            file_writer.writerow([word1, word2, word5])
         # УДАЛИТЬ: если нет других вариантов возврата, то в явном возврате None нет необходимости: функция, в которой нет ни одного return, всегда вернёт None
-        return None    
+#        return None    
 
 
 # >>> CountableNouns.words
@@ -119,3 +129,19 @@ class CountableNouns:
 
 
 # ИТОГ: нужно лучше, доработать — 4/7
+
+# E:\!Обучение\top\!Python\Sizov>python -i 2023.08.10\4.py
+# >>> CountableNouns.words
+# {'год': ('года', 'лет'), 'месяц': ('месяца', 'месяцев'), 'день': ('дня', 'дней'), 'попугай': ('попугая', 'попугаев'), 'капля': ('капли', 'капель'), 'слово': ('слова', 'слов')}
+# >>> CountableNouns.pick(5, 'камень')
+# существительное "камень" отсутствует в базе
+# введите слово, согласующееся с числительным "два": камня
+# введите слово, согласующееся с числительным "пять": камней
+# >>>
+# >>> CountableNouns.pick(11, 'камень')
+# 'камней'
+# >>> CountableNouns.pick(112, 'камень')
+# 'камней'
+# >>> CountableNouns.pick(5119, 'камень')
+# 'камней'
+# >>>
