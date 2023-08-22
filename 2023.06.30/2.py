@@ -1,7 +1,9 @@
 from time import sleep
+from functools import wraps
 
 def exception_delay_repeat(function):
     """Спустя полсекунды повторяет вызов декорируемой функции в случае возникновения исключения."""
+    @wraps(function)
     def wrapper(*args, **kwargs):
         try:
             result = function(*args, **kwargs)
@@ -23,15 +25,15 @@ def exception_delay_repeat(function):
 # ...             return 'success'
 # ...
 # >>> test_func
-# <function test_func at 0x0000020FC1223240>
+# <function test_func at 0x000001A411AE3240>
 # >>>
 # >>> test_func = exception_delay_repeat(test_func)
 # >>> test_func
-# <function exception_delay_repeat.<locals>.wrapper at 0x0000020FC1290220>
+# <function test_func at 0x000001A411B50220>
 # >>>
 # >>> test_func()
 # 'success'
 # >>> test_func()
 # 'success'
 # >>> test_func()
-# ConnectionError: failure    
+# ConnectionError: failure  
