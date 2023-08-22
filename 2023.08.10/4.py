@@ -28,7 +28,7 @@ class CountableNouns:
             last_digit, two_last_digits = number % 10, number % 100
             if last_digit == 1 and two_last_digits != 11:
                 return word
-            elif last_digit == 2 and two_last_digits != 12:
+            elif last_digit < 5 and (two_last_digits < 10 or two_last_digits > 19):
                 return cls.words[word][0]
             else:
                 return cls.words[word][1]
