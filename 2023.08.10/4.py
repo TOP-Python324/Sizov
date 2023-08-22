@@ -23,27 +23,17 @@ class CountableNouns:
     @classmethod
     def pick(cls, number: int, word: str) -> str:
         """Принимает в качестве аргументов число и существительное для согласования в единственном числе, возвращает согласованное с переданным числом существительное."""
-        # ИСПРАВИТЬ: смотреть одну последнюю цифру недостаточно, потому что есть числа исключения из правил согласования: 11, 12, 13, 14 и прочие, заканчивающиеся на эти цифры (см. тест ниже)
-#        number = number if number < 10 else number % 10
-        while number > 19:
-            if number < 100:
-                number %= 10
+        # ИСПОЛЬЗОВАТЬ:
+        try:
+            last_digit, two_last_digits = number % 10, number % 100
+            if last_digit == 1 and two_last_digits != 11:
+                return word
+            elif last_digit == 2 and two_last_digits != 12:
+                return cls.words[word][0]
             else:
-                digit_number = len(str(number))
-                while digit_number > 2:
-                    digit_number -= 1
-                    number -= number//10**digit_number * 10**digit_number                    
-        # ИСПРАВИТЬ: в данном случае имеет смысл использовать перехват исключения KeyError
-        if number == 1:
-            return word
-        else: 
-            if word in cls.words:
-                if number < 5:
-                    return cls.words[word][0]
-                else:
-                    return cls.words[word][1]    
-            else:
-                cls.save_words(word)
+                return cls.words[word][1]
+        except KeyError:
+            cls.save_words(word)
         
     @classmethod
     def save_words(cls, word1: str = None) -> None:
