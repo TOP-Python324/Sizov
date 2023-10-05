@@ -2,7 +2,6 @@ class Point:
     """
     Класс описывающий двумерную точку
     """
-
     def __init__(self, x: float = 0, y: float = 0):
         self.__x = float(x)
         self.__y = float(y)
@@ -28,7 +27,6 @@ class Point:
 
     def __str__(self):
         return self.__repr__()
-
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
@@ -60,33 +58,38 @@ class Line:
     def start(self) -> Point:
         return self.__start
 
-    @property
-    def end(self) -> Point:
-        return self.__end
-
-    @property
-    def length(self) -> float:
-        return self.__length
-
     @start.setter
+    # ДОБАВИТЬ: аннотацию типа параметра
     def start(self, new_point):
         if isinstance(new_point, self.start.__class__):
+            # КОММЕНТАРИЙ: класс Point по замыслу должен имитировать неизменяемый объект, на это указывают запрещающие сеттеры
+            # ИСПРАВИТЬ: замените значение в атрибуте __start текущего экземпляра отрезка, а не пытайтесь изменить координаты уже имеющейся точки
             self.__start._Point__x = new_point.x
             self.__start._Point__y = new_point.y
             self.__length = self.__length_calc(self.start, self.end)
         else:
             raise TypeError(f"'start' attribute of '{self.__class__.__name__}' object supports only '{self.start.__class__.__name__}' object assignment")
 
+    @property
+    def end(self) -> Point:
+        return self.__end
+
     @end.setter
     def end(self, new_point):
         if isinstance(new_point, self.end.__class__):
+            # ИСПРАВИТЬ: аналогично
             self.__end._Point__x = new_point.x
             self.__end._Point__y = new_point.y
             self.__length = self.__length_calc(self.start, self.end)
         else:
             raise TypeError(f"'end' attribute of '{self.__class__.__name__}' object supports only '{self.end.__class__.__name__}' object assignment")
 
+    @property
+    def length(self) -> float:
+        return self.__length
+
     @length.setter
+    # УДАЛИТЬ: аннотацию возвращаемого значения — этот метод никогда не сможет вернуть None
     def length(self, new_length: float) -> None:
         raise TypeError(f"'{self.__class__.__name__}' object does not support length assignment")
 
@@ -101,14 +104,17 @@ class Polygon(list):
     """
     Класс описывающий многоугольник
     """
-
     def __init__(self, side1: Line, side2: Line, side3: Line, *sides: Line):
+        # ИСПОЛЬЗОВАТЬ: переопределение локальной переменной sides:
+        sides = side1, side2, side3, * sides
+        # ИСПРАВИТЬ: с учётом нового значения sides
         super().__init__([side1, side2, side3])
         for side in sides:
             super().append(side)
 
     def _is_closed(self) -> bool:
         """Проверяет, формируют ли отрезки замкнутый многоугольник."""
+        # ИСПРАВИТЬ: используйте функцию pairwise() из модуля стандартной библиотеки itertools
         for i in range(len(self)-1):
             if self[i].end.x != self[i+1].start.x or self[i].end.y != self[i+1].start.y:
                 return False
@@ -120,6 +126,7 @@ class Polygon(list):
     def perimeter(self) -> float:
         """Вычисляет периметр многоугольника."""
         if self._is_closed():
+            # ИСПРАВИТЬ: используйте встроенную функцию sum()
             perimeter = 0
             for side in self:
                 perimeter += side.length
