@@ -95,6 +95,7 @@ class Line:
         raise TypeError(f"'{self.__class__.__name__}' object does not support length assignment")
 
     def __repr__(self):
+        # ИСПРАВИТЬ: используйте строковое представление целой точки
         return f'({self.__start.x}, {self.__start.y})———({self.__end.x}, {self.__end.y})'
 
     def __str__(self):
