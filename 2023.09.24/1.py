@@ -1,9 +1,11 @@
+from itertools import pairwise
+
 class Point:
     """
     Класс описывающий двумерную точку
     """
     # ИСПРАВИТЬ: конструктор точки не должен содержать значения по умолчанию
-    def __init__(self, x: float = 0, y: float = 0):
+    def __init__(self, x: float, y: float):
         self.__x = float(x)
         self.__y = float(y)
 
@@ -12,7 +14,7 @@ class Point:
         return self.__x
 
     @x.setter
-    def x(self, x: float) -> None:
+    def x(self, x: float):
         raise TypeError(f"'{self.__class__.__name__}' object does not support coordinate assignment")
 
     @property
@@ -20,7 +22,7 @@ class Point:
         return self.__y
 
     @y.setter
-    def y(self, y: float) -> None:
+    def y(self, y: float):
         raise TypeError(f"'{self.__class__.__name__}' object does not support coordinate assignment")
 
     def __repr__(self):
@@ -44,7 +46,6 @@ class Line:
     def __init__(self, start_point: Point, end_point: Point):
         self.__start = start_point
         self.__end = end_point
-#        self.__length = ((end_point.x - start_point.x)**2 + (end_point.y - start_point.y)**2)**0.5
         self.__length = self.__length_calc(start_point, end_point)
 
     @staticmethod
@@ -61,12 +62,13 @@ class Line:
 
     @start.setter
     # ДОБАВИТЬ: аннотацию типа параметра
-    def start(self, new_point):
+    def start(self, new_point: Point):
         if isinstance(new_point, self.start.__class__):
             # КОММЕНТАРИЙ: класс Point по замыслу должен имитировать неизменяемый объект, на это указывают запрещающие сеттеры
             # ИСПРАВИТЬ: замените значение в атрибуте __start текущего экземпляра отрезка, а не пытайтесь изменить координаты уже имеющейся точки
-            self.__start._Point__x = new_point.x
-            self.__start._Point__y = new_point.y
+#            self.__start._Point__x = new_point.x
+#            self.__start._Point__y = new_point.y
+            self.__start = new_point
             self.__length = self.__length_calc(self.start, self.end)
         else:
             raise TypeError(f"'start' attribute of '{self.__class__.__name__}' object supports only '{self.start.__class__.__name__}' object assignment")
@@ -76,11 +78,12 @@ class Line:
         return self.__end
 
     @end.setter
-    def end(self, new_point):
+    def end(self, new_point: Point):
         if isinstance(new_point, self.end.__class__):
             # ИСПРАВИТЬ: аналогично
-            self.__end._Point__x = new_point.x
-            self.__end._Point__y = new_point.y
+#            self.__end._Point__x = new_point.x
+#            self.__end._Point__y = new_point.y
+            self.__end = new_point
             self.__length = self.__length_calc(self.start, self.end)
         else:
             raise TypeError(f"'end' attribute of '{self.__class__.__name__}' object supports only '{self.end.__class__.__name__}' object assignment")
@@ -91,12 +94,13 @@ class Line:
 
     @length.setter
     # УДАЛИТЬ: аннотацию возвращаемого значения — этот метод никогда не сможет вернуть None
-    def length(self, new_length: float) -> None:
+    def length(self, new_length: float):
         raise TypeError(f"'{self.__class__.__name__}' object does not support length assignment")
 
     def __repr__(self):
         # ИСПРАВИТЬ: используйте строковое представление целой точки
-        return f'({self.__start.x}, {self.__start.y})———({self.__end.x}, {self.__end.y})'
+#        return f'({self.__start.x}, {self.__start.y})———({self.__end.x}, {self.__end.y})'
+        return f'{self.start}———{self.end}'
 
     def __str__(self):
         return self.__repr__()
@@ -110,13 +114,14 @@ class Polygon(list):
         # ИСПОЛЬЗОВАТЬ: переопределение локальной переменной sides:
         sides = side1, side2, side3, * sides
         # ИСПРАВИТЬ: с учётом нового значения sides
-        super().__init__([side1, side2, side3])
+        super().__init__([])
         for side in sides:
             super().append(side)
 
     def _is_closed(self) -> bool:
         """Проверяет, формируют ли отрезки замкнутый многоугольник."""
         # ИСПРАВИТЬ: используйте функцию pairwise() из модуля стандартной библиотеки itertools
+#        print(*pairwise(self))
         for i in range(len(self)-1):
             if self[i].end.x != self[i+1].start.x or self[i].end.y != self[i+1].start.y:
                 return False
@@ -129,9 +134,9 @@ class Polygon(list):
         """Вычисляет периметр многоугольника."""
         if self._is_closed():
             # ИСПРАВИТЬ: используйте встроенную функцию sum()
-            perimeter = 0
-            for side in self:
-                perimeter += side.length
+            perimeter = sum(side.length for side in self)
+#            for side in self:
+#                perimeter += side.length
             return perimeter
         else:
             raise ValueError("line items doesn't form a closed polygon")
